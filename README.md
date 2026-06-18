@@ -151,8 +151,13 @@ Questo evita di dare evidenza ad alcune imprese rispetto ad altre.
 
 ## Modulo di adesione imprese (Google Apps Script)
 
-Il pulsante **Aderisci** apre un form con i campi del foglio. L'invio scrive una nuova
-riga nel Google Sheet tramite uno script Google da configurare una sola volta:
+Il pulsante **Aderisci** apre un form con i campi del foglio. L'invio **non** modifica
+l'elenco pubblico: scrive una riga nel foglio (tab) **"Richieste di Inserimento"**, una
+coda da validare. La dashboard mostra solo il foglio **"Imprese Aderenti"** (gid=0), quindi
+l'amministratore decide quali richieste promuovere copiando la riga nel foglio principale
+(le coordinate sono già geocodificate).
+
+Lo script Google va configurato una sola volta:
 
 1. Apri il Google Sheet → menu **Estensioni → Apps Script**.
 2. Incolla il contenuto del file [`apps-script.gs`](apps-script.gs) e salva.

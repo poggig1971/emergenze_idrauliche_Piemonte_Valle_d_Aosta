@@ -437,7 +437,7 @@ async function submitAdesione(e){
     fd.set("mezzi", [...form.querySelectorAll(".chk-mezzi:checked")].map(c => c.value).join(" "));
     fd.set("bacini", [...form.querySelectorAll(".chk-bacini:checked")].map(c => c.value).join(" "));
     await fetch(APPS_SCRIPT_URL, { method: "POST", body: fd, mode: "no-cors" });
-    msg.textContent = "Adesione inviata. Grazie!";
+    msg.textContent = "Richiesta inviata. Sarà valutata da ANCE Piemonte e Valle d'Aosta. Grazie!";
     msg.className = "form-msg ok";
     form.reset();
   } catch (err){

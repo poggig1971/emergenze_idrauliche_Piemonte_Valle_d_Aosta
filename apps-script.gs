@@ -13,24 +13,36 @@
  * 5. Copia l'URL che termina con /exec.
  * 6. Incollalo in app.js nella costante APPS_SCRIPT_URL e fai push.
  *
- * Le nuove adesioni vengono aggiunte come riga in fondo al foglio (gid=0),
- * con geocodifica automatica dell'indirizzo (lat/lng) e invio di una
- * email di notifica a NOTIFY_EMAIL.
+ * Le adesioni inviate dal form vengono aggiunte al foglio (tab) "Richieste di
+ * Inserimento" — una coda da validare. NON finiscono direttamente in "Imprese
+ * Aderenti" (gid=0), che è ciò che la dashboard mostra. Così l'amministratore
+ * decide se promuoverle (copiando la riga nel foglio principale).
+ * Ogni richiesta viene geocodificata (lat/lng) e notificata via email a NOTIFY_EMAIL.
  *
  * NB: dopo ogni modifica al codice, per aggiornare l'app web fai
  *     Distribuisci → Gestisci distribuzioni → (matita) → Versione: Nuova versione → Distribuisci.
  */
 
-// Email a cui notificare ogni nuova adesione
+// Foglio (tab) in cui salvare le richieste in attesa di validazione
+var SHEET_RICHIESTE = "Richieste di Inserimento";
+
+// Email a cui notificare ogni nuova richiesta
 var NOTIFY_EMAIL = "gianluca.poggi@ancepiemonte.it";
 
 function doPost(e) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sh = ss.getSheets()[0]; // primo foglio = gid 0
+    var sh = ss.getSheetByName(SHEET_RICHIESTE);
+    if (!sh) {
+      // crea il foglio coda con l'intestazione se non esiste
+      sh = ss.insertSheet(SHEET_RICHIESTE);
+      sh.appendRow(["ordine","provincia","ragione_sociale","indirizzo","citta",
+        "persona_riferimento","telefono","email","qualificazione_soa","addetti",
+        "qualificazione_personale","reperibilita_h24","mezzi","bacini","logo","lat","lng"]);
+    }
     var p = (e && e.parameter) ? e.parameter : {};
 
-    // Prossimo numero d'ordine = numero di righe dati esistenti + 1
+    // Numero progressivo nella coda delle richieste
     var ordine = sh.getLastRow(); // riga 1 = intestazione
 
     // Geocodifica indirizzo -> lat/lng
@@ -67,7 +79,8 @@ function doPost(e) {
     // Email di notifica
     try {
       var corpo =
-        "Nuova adesione ricevuta dalla dashboard ANCE Emergenze Idrauliche.\n\n" +
+        "Nuova RICHIESTA DI INSERIMENTO ricevuta dalla dashboard ANCE Emergenze Idrauliche.\n" +
+        "(salvata nel foglio \"" + SHEET_RICHIESTE + "\", in attesa di validazione)\n\n" +
         "Ragione sociale: " + (p.ragione_sociale || "") + "\n" +
         "Provincia: " + (p.provincia || "") + "\n" +
         "Città: " + (p.citta || "") + "\n" +
@@ -82,7 +95,7 @@ function doPost(e) {
         "Mezzi: " + (p.mezzi || "") + "\n" +
         "Bacini: " + (p.bacini || "") + "\n" +
         "Coordinate: " + lat + ", " + lng + "\n";
-      MailApp.sendEmail(NOTIFY_EMAIL, "Nuova adesione: " + (p.ragione_sociale || "impresa"), corpo);
+      MailApp.sendEmail(NOTIFY_EMAIL, "Richiesta inserimento: " + (p.ragione_sociale || "impresa"), corpo);
     } catch (mErr) { /* invio email non riuscito: l'adesione resta comunque salvata */ }
 
     return ContentService
