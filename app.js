@@ -7,7 +7,9 @@
 // --- CONFIG ---
 const SHEET_ID  = "11Z14AM03ONDi1pNgMW0mSV9tcvD2DjFgp4FYVXZt7qw";
 const GID       = "0";
-const CSV_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${GID}`;
+// Endpoint gviz: CORS-friendly per fogli condivisi "chiunque con il link"
+// (evita il redirect/400 dell'endpoint /export).
+const CSV_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}`;
 const FALLBACK  = "data/imprese_fallback.json";
 
 const PROV_COLORS = {

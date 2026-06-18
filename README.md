@@ -21,7 +21,7 @@ Dashboard pubblicata su GitHub Pages:
 I dati sono alimentati da un **Google Sheet pubblico** letto in formato CSV:
 
 - **Foglio dati:** https://docs.google.com/spreadsheets/d/11Z14AM03ONDi1pNgMW0mSV9tcvD2DjFgp4FYVXZt7qw/edit
-- **Endpoint CSV usato dall'app:** `https://docs.google.com/spreadsheets/d/11Z14AM03ONDi1pNgMW0mSV9tcvD2DjFgp4FYVXZt7qw/export?format=csv&gid=0`
+- **Endpoint CSV usato dall'app (gviz, CORS-friendly):** `https://docs.google.com/spreadsheets/d/11Z14AM03ONDi1pNgMW0mSV9tcvD2DjFgp4FYVXZt7qw/gviz/tq?tqx=out:csv&gid=0`
 
 All'avvio l'app legge il foglio via `fetch`, mette i dati in cache in memoria e popola mappa,
 lista e contatori. Se il foglio non è raggiungibile, l'app usa automaticamente la copia locale
