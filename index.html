@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANCE Emergenze Idrauliche – Piemonte e Valle d'Aosta</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-brand">
+    <span class="header-logo">ANCE</span>
+    <div>
+      <div class="header-title">Emergenze Idrauliche</div>
+      <div class="header-subtitle">Imprese qualificate · Piemonte e Valle d'Aosta</div>
+    </div>
+  </div>
+  <div class="header-stats">
+    <div class="stat"><div class="stat-num" id="stat-imprese">0</div><div class="stat-label">Imprese visibili</div></div>
+    <div class="stat"><div class="stat-num" id="stat-addetti">0</div><div class="stat-label">Addetti totali</div></div>
+    <div class="stat"><div class="stat-num" id="stat-province">0</div><div class="stat-label">Province</div></div>
+    <button id="btn-refresh" class="btn-refresh" title="Rilegge i dati dal Google Sheet">↻ Aggiorna dati</button>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-filters">
+      <div class="filter-block">
+        <div class="filter-label">Ricerca</div>
+        <input type="text" id="f-search" placeholder="Nome impresa o città...">
+      </div>
+      <div class="filter-row">
+        <div class="filter-block" style="flex:1">
+          <div class="filter-label">Provincia</div>
+          <select id="f-provincia"><option value="">Tutte</option></select>
+        </div>
+        <div class="filter-block" style="flex:1">
+          <div class="filter-label">Bacino</div>
+          <select id="f-bacino"><option value="">Tutti</option></select>
+        </div>
+      </div>
+      <div class="filter-toggles">
+        <span class="badge-toggle" id="t-h24" data-active="false">Reperibilità H24</span>
+        <span class="badge-toggle" id="t-soa" data-active="false">SOA certificata</span>
+      </div>
+    </div>
+    <div class="sidebar-list" id="lista"></div>
+    <div class="sidebar-status" id="status-bar">Caricamento dati…</div>
+  </aside>
+
+  <!-- MAP -->
+  <div class="map-wrap">
+    <div id="map"></div>
+  </div>
+
+  <!-- DETAIL PANEL -->
+  <aside class="detail" id="detail">
+    <div class="detail-header" id="detail-header">
+      <button class="detail-close" id="detail-close" title="Chiudi">✕</button>
+      <div class="detail-logo" id="detail-logo"></div>
+      <div class="detail-prov" id="detail-prov"></div>
+      <div class="detail-name" id="detail-name"></div>
+    </div>
+    <div class="detail-body" id="detail-body"></div>
+  </aside>
+
+</div>
+
+<!-- Drawer handle (mobile) -->
+<button class="drawer-handle" id="drawer-handle">☰ Imprese</button>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

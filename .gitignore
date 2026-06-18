@@ -1,0 +1,8 @@
+# File di sistema
+desktop.ini
+.DS_Store
+Thumbs.db
+
+# Sorgenti / materiale di lavoro (non pubblicati)
+*.xlsx
+dashboard_emergenze_idrauliche.html
