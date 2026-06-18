@@ -38,8 +38,13 @@ function doPost(e) {
       sh = ss.insertSheet(SHEET_RICHIESTE);
       sh.appendRow(["ordine","provincia","ragione_sociale","indirizzo","citta",
         "persona_riferimento","telefono","email","qualificazione_soa","addetti",
-        "qualificazione_personale","reperibilita_h24","mezzi","bacini","logo","lat","lng"]);
+        "qualificazione_personale","reperibilita_h24","mezzi","bacini","logo","lat","lng",
+        "data_richiesta","stato"]);
     }
+    // assicura le intestazioni delle colonne di tracciamento (18 = data, 19 = stato)
+    if (!sh.getRange(1, 18).getValue()) sh.getRange(1, 18).setValue("data_richiesta");
+    if (!sh.getRange(1, 19).getValue()) sh.getRange(1, 19).setValue("stato");
+
     var p = (e && e.parameter) ? e.parameter : {};
 
     // Numero progressivo nella coda delle richieste
@@ -73,7 +78,9 @@ function doPost(e) {
       p.bacini || "",
       p.logo || "",
       lat,
-      lng
+      lng,
+      new Date(),     // data_richiesta
+      "DA VALUTARE"   // stato
     ]);
 
     // Email di notifica

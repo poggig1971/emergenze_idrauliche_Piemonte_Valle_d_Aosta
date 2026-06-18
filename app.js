@@ -434,7 +434,10 @@ async function submitAdesione(e){
   try {
     const fd = new FormData(form);
     // raccoglie le crocette in un unico campo (come nel foglio)
-    fd.set("mezzi", [...form.querySelectorAll(".chk-mezzi:checked")].map(c => c.value).join(" "));
+    const mezziSel = [...form.querySelectorAll(".chk-mezzi:checked")].map(c => c.value);
+    const altro = (($("mezzi-altro") || {}).value || "").trim();
+    if (altro) mezziSel.push(altro.toUpperCase());
+    fd.set("mezzi", mezziSel.join(" "));
     fd.set("bacini", [...form.querySelectorAll(".chk-bacini:checked")].map(c => c.value).join(" "));
     await fetch(APPS_SCRIPT_URL, { method: "POST", body: fd, mode: "no-cors" });
     msg.textContent = "Richiesta inviata. Sarà valutata da ANCE Piemonte e Valle d'Aosta. Grazie!";
