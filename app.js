@@ -15,7 +15,7 @@ const FALLBACK  = "data/imprese_fallback.json";
 
 // URL del Web App di Google Apps Script per ricevere le adesioni.
 // Dopo aver distribuito lo script (vedi apps-script.gs), incolla qui l'URL /exec.
-const APPS_SCRIPT_URL = "";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfO6DnIcROAlcUgniIHbQMYIcI2oXrv1WHa2M7eS7o6Qa9tlQKUTuPfOPe6ohJBcHVfQ/exec";
 
 const PROV_COLORS = {
   TO:"#1565c0", AL:"#c62828", AT:"#6a1b9a", BI:"#00695c", CN:"#e65100",
@@ -67,12 +67,32 @@ function parseCSV(text){
   return rows.slice(1).filter(r => r.some(c => c && c.trim())).map(r => {
     const o = {};
     header.forEach((h, idx) => o[h] = (r[idx] ?? "").trim());
-    o.ordine  = Number(o.ordine) || 0;
-    o.addetti = Number(o.addetti) || 0;
-    o.lat = parseFloat(String(o.lat).replace(",", "."));
-    o.lng = parseFloat(String(o.lng).replace(",", "."));
     return o;
   });
+}
+
+// Ripristina una coordinata a cui l'import del foglio ha tolto il punto decimale.
+// Es. "44685" -> 44.685 (lat), "88" -> 8.8 (lng). Gestisce anche la virgola.
+function fixCoord(v, maxAbs){
+  let s = String(v == null ? "" : v).trim().replace(",", ".");
+  if (!s) return NaN;
+  let n = parseFloat(s);
+  if (isNaN(n)) return NaN;
+  if (s.indexOf(".") !== -1) return n;          // decimale già presente: ok
+  while (Math.abs(n) > maxAbs) n /= 10;          // ripristina decimale perso
+  return n;
+}
+
+// Normalizza la lista: numeri, coordinate, esclude righe senza ragione sociale.
+function normalizeImprese(list){
+  return list.map(d => {
+    const o = Object.assign({}, d);
+    o.ordine  = Number(o.ordine) || 0;
+    o.addetti = Number(o.addetti) || 0;
+    o.lat = fixCoord(o.lat, 90);    // latitudine valida <= 90
+    o.lng = fixCoord(o.lng, 12);    // longitudine Piemonte/VdA < 12
+    return o;
+  }).filter(d => String(d.ragione_sociale || "").trim() && !isNaN(d.lat) && !isNaN(d.lng));
 }
 
 // ============================================================
@@ -86,13 +106,13 @@ async function loadData(){
     const txt = await res.text();
     const data = parseCSV(txt);
     if (!data.length) throw new Error("CSV vuoto");
-    IMPRESE = data.filter(d => !isNaN(d.lat) && !isNaN(d.lng));
+    IMPRESE = normalizeImprese(data);
     $("status-bar").textContent = `${IMPRESE.length} imprese · dati dal Google Sheet · ${new Date().toLocaleTimeString("it-IT")}`;
   } catch (err){
     console.warn("Fetch Google Sheet fallito, uso fallback:", err.message);
     try {
       const res = await fetch(FALLBACK + "?t=" + Date.now());
-      IMPRESE = (await res.json()).filter(d => !isNaN(d.lat) && !isNaN(d.lng));
+      IMPRESE = normalizeImprese(await res.json());
       $("status-bar").textContent = `${IMPRESE.length} imprese · dati locali (offline)`;
     } catch (e2){
       $("status-bar").textContent = "Errore: impossibile caricare i dati.";
@@ -429,6 +449,11 @@ function bindUI(){
   $("btn-dichiarazioni").addEventListener("click", () => openModal("modal-dichiarazioni"));
   $("btn-aderisci").addEventListener("click", () => openModal("modal-aderisci"));
   $("btn-download").addEventListener("click", () => window.open(XLSX_URL, "_blank"));
+  $("btn-fullscreen").addEventListener("click", toggleFullscreen);
+  document.addEventListener("fullscreenchange", () => {
+    $("btn-fullscreen").textContent = document.fullscreenElement ? "⛶ Esci" : "⛶ Schermo intero";
+    if (map) setTimeout(() => map.invalidateSize(), 200);
+  });
 
   document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", closeModals));
   document.querySelectorAll(".modal").forEach(m => m.addEventListener("click", e => { if (e.target === m) closeModals(); }));
@@ -439,6 +464,15 @@ function bindUI(){
 }
 
 function toggleBadge(el, key){ filters[key] = !filters[key]; el.dataset.active = filters[key]; render(); }
+
+function toggleFullscreen(){
+  const el = document.documentElement;
+  if (!document.fullscreenElement){
+    (el.requestFullscreen || el.webkitRequestFullscreen || function(){}).call(el);
+  } else {
+    (document.exitFullscreen || document.webkitExitFullscreen || function(){}).call(document);
+  }
+}
 
 function clearFilters(){
   filters.search = ""; filters.provincia = ""; filters.bacino = ""; filters.h24 = false; filters.soa = false;

@@ -135,7 +135,15 @@ funziona comunque senza il livello dei confini.
   Alessandro Lana (UPI Piemonte) e Davide Gilardino (ANCI Piemonte).
 - **⬇ Excel** — scarica l'intero elenco in formato Excel (`.xlsx`) dal Google Sheet.
 - **✚ Aderisci** — apre il modulo di adesione riservato alle imprese associate.
+- **⛶ Schermo intero** (arancione) — apre la dashboard a tutto schermo; utile quando la si
+  incorpora in un sito tramite `<iframe>` (ricordarsi l'attributo `allowfullscreen`).
 - **↻** — ricarica i dati dal Google Sheet senza ricaricare la pagina.
+
+### Coordinate
+
+L'app **ripristina automaticamente** le coordinate a cui l'import del CSV in Google Sheets
+ha tolto il punto decimale (es. `44685` → `44.685`) e gestisce anche i decimali con la
+virgola. Le righe senza ragione sociale (es. invii di prova vuoti) vengono ignorate.
 
 All'apertura la lista a sinistra è volutamente **vuota**: le imprese si individuano
 cliccando i punti sulla mappa, oppure usando i filtri Ricerca / Provincia / Bacino.
@@ -153,8 +161,12 @@ riga nel Google Sheet tramite uno script Google da configurare una sola volta:
 4. Incolla quell'URL in `app.js` nella costante `APPS_SCRIPT_URL` e fai un nuovo push.
 
 Lo script geocodifica automaticamente l'indirizzo inserito (lat/lng), così la nuova
-impresa compare subito sulla mappa. Finché `APPS_SCRIPT_URL` è vuoto, il form mostra un
-avviso e non invia.
+impresa compare subito sulla mappa, e invia una **email di notifica** a
+`gianluca.poggi@ancepiemonte.it` (modificabile nella costante `NOTIFY_EMAIL` dello script).
+
+> Dopo ogni modifica al codice Apps Script, per renderla attiva sull'URL `/exec`:
+> **Distribuisci → Gestisci distribuzioni → (matita) → Versione: Nuova versione → Distribuisci**.
+> Alla prima esecuzione con invio email Google chiederà un'autorizzazione aggiuntiva (Gmail).
 
 ## Logo
 

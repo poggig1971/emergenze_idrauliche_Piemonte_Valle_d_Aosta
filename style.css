@@ -27,6 +27,8 @@ body { font-family: 'Segoe UI', Roboto, Arial, sans-serif; background: #f4f6f8; 
 .hbtn:hover { background: rgba(255,255,255,.24); }
 .hbtn-accent { background: #2f5b9c; border-color: #2f5b9c; }
 .hbtn-accent:hover { background: #3a6db8; }
+.hbtn-fs { background: #ef6c00; border-color: #ef6c00; }
+.hbtn-fs:hover { background: #f57c1a; }
 .hbtn:disabled { opacity: .6; cursor: wait; }
 
 /* ===== LAYOUT ===== */
@@ -117,6 +119,7 @@ select:focus, input:focus, textarea:focus { border-color: #2f5b9c; box-shadow: 0
 .modal-text ol { margin: 0 0 12px 22px; font-size: 14px; line-height: 1.6; color: #333; }
 .modal-text li { margin-bottom: 5px; }
 
+.dichiarazioni-img { width: 100%; height: auto; border-radius: 8px; margin-bottom: 18px; border: 1px solid #eef1f6; }
 .quotes { display: flex; flex-direction: column; gap: 18px; }
 .quote { border-left: 4px solid #2f5b9c; padding: 4px 0 4px 16px; }
 .quote-author { font-size: 15px; font-weight: 700; color: #16294e; }
