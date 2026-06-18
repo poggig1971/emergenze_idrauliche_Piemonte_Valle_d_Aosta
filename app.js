@@ -26,6 +26,12 @@ const PROV_NOMI = {
   NO:"Novara", VC:"Vercelli", VB:"Verbano-Cusio-Ossola", AO:"Aosta"
 };
 
+// Opzioni mezzi/attrezzature per il form di adesione
+const MEZZI_OPZIONI = [
+  "Escavatori", "Pale gommate", "Pale cingolate", "Pompe idrovore",
+  "Autocarri pesanti", "Barche / mezzi galleggianti"
+];
+
 // Bacini idrografici canonici (alcuni nomi sono multi-parola)
 const CANON_BACINI = [
   "PO","SESIA","DORA","BORMIDA","TANARO","ADDA","TICINO","SCRIVIA","ORBA",
@@ -404,6 +410,16 @@ function closeModals(){ document.querySelectorAll(".modal.open").forEach(m => m.
 // ============================================================
 //  FORM ADESIONE
 // ============================================================
+// Popola le checkbox di mezzi e bacini
+function populateFormOptions(){
+  const mg = $("mezzi-group");
+  if (mg) mg.innerHTML = MEZZI_OPZIONI.map(m =>
+    `<label class="chk"><input type="checkbox" class="chk-mezzi" value="${m.toUpperCase()}"> ${m}</label>`).join("");
+  const bg = $("bacini-group");
+  if (bg) bg.innerHTML = CANON_BACINI.map(b =>
+    `<label class="chk"><input type="checkbox" class="chk-bacini" value="${b}"> ${titol(b)}</label>`).join("");
+}
+
 async function submitAdesione(e){
   e.preventDefault();
   const form = e.target;
@@ -417,6 +433,9 @@ async function submitAdesione(e){
   btn.disabled = true; msg.textContent = "Invio in corso…"; msg.className = "form-msg";
   try {
     const fd = new FormData(form);
+    // raccoglie le crocette in un unico campo (come nel foglio)
+    fd.set("mezzi", [...form.querySelectorAll(".chk-mezzi:checked")].map(c => c.value).join(" "));
+    fd.set("bacini", [...form.querySelectorAll(".chk-bacini:checked")].map(c => c.value).join(" "));
     await fetch(APPS_SCRIPT_URL, { method: "POST", body: fd, mode: "no-cors" });
     msg.textContent = "Adesione inviata. Grazie!";
     msg.className = "form-msg ok";
@@ -486,4 +505,5 @@ function clearFilters(){
 // ============================================================
 initMap();
 bindUI();
+populateFormOptions();
 loadData();

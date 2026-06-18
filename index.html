@@ -186,12 +186,14 @@
       <label>Qualificazione del personale
         <textarea name="qualificazione_personale" rows="2" placeholder="es. tecnici specializzati in manutenzione idraulica, operatori escavatori..."></textarea>
       </label>
-      <label>Mezzi e attrezzature
-        <textarea name="mezzi" rows="2" placeholder="es. escavatori, pale gommate/cingolate, pompe idrovore, autocarri pesanti..."></textarea>
-      </label>
-      <label>Bacini idrografici di operatività
-        <input type="text" name="bacini" placeholder="es. PO SESIA DORA BORMIDA TANARO">
-      </label>
+      <div class="form-field">
+        <span class="form-field-label">Mezzi e attrezzature <small>(seleziona quelli disponibili)</small></span>
+        <div class="chk-group" id="mezzi-group"></div>
+      </div>
+      <div class="form-field">
+        <span class="form-field-label">Bacini idrografici di operatività <small>(seleziona uno o più)</small></span>
+        <div class="chk-group chk-group-bacini" id="bacini-group"></div>
+      </div>
       <label>Logo (URL immagine, facoltativo)
         <input type="text" name="logo" placeholder="https://.../logo.png">
       </label>
