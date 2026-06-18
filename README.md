@@ -108,9 +108,39 @@ Quindi su GitHub: **Settings → Pages → Build and deployment → Source: Depl
 Branch: `main` / `/root` → Save**. Dopo qualche minuto la dashboard sarà online all'indirizzo
 indicato nella sezione *Demo live*.
 
+## Livelli della mappa
+
+In alto a destra sulla mappa è disponibile un selettore dei livelli:
+
+- **Mappa (fiumi evidenziati)** — base CartoDB *Voyager*, che mostra fiumi e corsi
+  d'acqua in azzurro con le relative etichette (default).
+- **OpenStreetMap** — base cartografica alternativa.
+- **Confini provinciali** — perimetri delle 9 province (TO, AL, AT, BI, CN, NO, VC, VB, AO)
+  colorati con il colore di ciascuna provincia; attivo di default.
+- **Fiumi e bacini (idrografia)** — overlay idrografico Esri che evidenzia reticolo
+  fluviale e bacini; attivabile a richiesta.
+
+I confini provinciali sono caricati a runtime dal dataset pubblico
+[openpolis/geojson-italy](https://github.com/openpolis/geojson-italy)
+(`limits_IT_provinces.geojson`, fonte ISTAT). Se il file non è raggiungibile, la mappa
+funziona comunque senza il livello dei confini.
+
+> *Nota:* i livelli "Confini provinciali" e "Fiumi e bacini" vengono caricati da servizi
+> esterni (openpolis/ISTAT ed Esri) direttamente dal browser. Conviene verificarne la
+> resa sulla dashboard pubblicata.
+
+## Logo
+
+Il logo ANCE Piemonte Valle d'Aosta nell'header è incluso come **SVG vettoriale**
+(`img/logo-ance.svg`, riprodotto anche inline in `index.html`). Per usare il file
+ufficiale, basta sostituire l'SVG inline nell'header con un tag
+`<img src="img/logo-ance.png">` e caricare il PNG nella cartella `img/`.
+
 ## Tecnologie
 
-- [Leaflet.js](https://leafletjs.com/) 1.9.4 + tile OpenStreetMap
+- [Leaflet.js](https://leafletjs.com/) 1.9.4
+- Basi cartografiche: OpenStreetMap, CartoDB Voyager (© CARTO)
+- Overlay idrografico: Esri World Hydro Reference; confini province: openpolis / ISTAT
 - HTML / CSS / JavaScript vanilla (nessun framework, nessuna build)
 - Google Sheets come backend dati (CSV pubblico)
 

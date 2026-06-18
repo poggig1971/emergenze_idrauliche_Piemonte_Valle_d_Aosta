@@ -22,7 +22,7 @@ const PROV_NOMI = {
 // --- STATE ---
 let IMPRESE = [];                 // cache in memoria
 let markers = {};                 // ordine -> marker
-let map, markerLayer;
+let map, markerLayer, provinceLayer;
 const filters = { search:"", provincia:"", bacino:"", h24:false, soa:false };
 
 // --- DOM ---
@@ -284,12 +284,74 @@ function openDetail(i){
 //  MAPPA
 // ============================================================
 function initMap(){
-  map = L.map("map", { zoomControl: true }).setView([45.3, 8.0], 8);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  // --- Basi cartografiche ---
+  // Voyager (CartoDB): fiumi e corsi d'acqua ben evidenziati in azzurro
+  const voyager = L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+    maxZoom: 19, subdomains: "abcd",
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · © <a href="https://carto.com/attributions">CARTO</a>'
+  });
+  const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(map);
+  });
+
+  map = L.map("map", { zoomControl: true, layers: [voyager] }).setView([45.3, 8.0], 8);
+
+  // --- Overlay idrografico (fiumi/bacini) Esri World Hydro Reference ---
+  const hydro = L.tileLayer(
+    "https://services.arcgisonline.com/arcgis/rest/services/Reference/World_Hydro_Reference_Overlay/MapServer/tile/{z}/{y}/{x}",
+    { maxZoom: 19, opacity: 0.85, attribution: 'Hydro: Esri' }
+  );
+
+  // --- Layer confini provinciali (caricato da GeoJSON openpolis) ---
+  provinceLayer = L.geoJSON(null, {
+    style: f => {
+      const sig = provSiglaOf(f.properties);
+      const col = PROV_COLORS[sig] || "#888";
+      return { color: col, weight: 2, opacity: 0.9, fillColor: col, fillOpacity: 0.06 };
+    },
+    onEachFeature: (f, lyr) => {
+      const sig = provSiglaOf(f.properties);
+      lyr.bindTooltip(`${PROV_NOMI[sig] || sig}`, { sticky: true });
+    }
+  });
+
   markerLayer = L.layerGroup().addTo(map);
+
+  // Controllo livelli
+  L.control.layers(
+    { "Mappa (fiumi evidenziati)": voyager, "OpenStreetMap": osm },
+    { "Confini provinciali": provinceLayer, "Fiumi e bacini (idrografia)": hydro },
+    { collapsed: false }
+  ).addTo(map);
+
+  loadProvinceBoundaries();
+}
+
+// Estrae la sigla provincia dalle proprietà del GeoJSON (schema difensivo)
+function provSiglaOf(p){
+  if (!p) return "";
+  return String(p.prov_acr || p.SIGLA || p.sigla || p.prov_sigla || "").toUpperCase().trim();
+}
+
+// Carica i confini delle province di Piemonte e Valle d'Aosta (dati openpolis)
+async function loadProvinceBoundaries(){
+  const SRC = "https://raw.githubusercontent.com/openpolis/geojson-italy/master/geojson/limits_IT_provinces.geojson";
+  const NOSTRE = new Set(["TO","AL","AT","BI","CN","NO","VC","VB","AO"]);
+  try {
+    const res = await fetch(SRC);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const gj = await res.json();
+    const feats = (gj.features || []).filter(f => {
+      const sig = provSiglaOf(f.properties);
+      const reg = String(f.properties?.reg_name || "").toLowerCase();
+      return NOSTRE.has(sig) || reg.includes("piemonte") || reg.includes("aosta");
+    });
+    provinceLayer.addData({ type: "FeatureCollection", features: feats });
+    provinceLayer.addTo(map);   // visibile di default
+  } catch (e){
+    console.warn("Confini provinciali non caricati:", e.message);
+  }
 }
 
 // ============================================================
