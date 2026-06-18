@@ -112,13 +112,12 @@ indicato nella sezione *Demo live*.
 
 In alto a destra sulla mappa è disponibile un selettore dei livelli:
 
-- **Mappa (fiumi evidenziati)** — base CartoDB *Voyager*, che mostra fiumi e corsi
-  d'acqua in azzurro con le relative etichette (default).
+- **Mappa** — base CartoDB *Voyager* con fiumi e corsi d'acqua in azzurro (default).
+- **Idrografia (fiumi e bacini)** — base *OpenRiverboatMap*, che evidenzia in modo marcato
+  il reticolo fluviale e i bacini idrografici.
 - **OpenStreetMap** — base cartografica alternativa.
 - **Confini provinciali** — perimetri delle 9 province (TO, AL, AT, BI, CN, NO, VC, VB, AO)
-  colorati con il colore di ciascuna provincia; attivo di default.
-- **Fiumi e bacini (idrografia)** — overlay idrografico Esri che evidenzia reticolo
-  fluviale e bacini; attivabile a richiesta.
+  colorati con il colore di ciascuna provincia; attivo di default (sovrapponibile).
 
 I confini provinciali sono caricati a runtime dal dataset pubblico
 [openpolis/geojson-italy](https://github.com/openpolis/geojson-italy)
@@ -128,6 +127,34 @@ funziona comunque senza il livello dei confini.
 > *Nota:* i livelli "Confini provinciali" e "Fiumi e bacini" vengono caricati da servizi
 > esterni (openpolis/ISTAT ed Esri) direttamente dal browser. Conviene verificarne la
 > resa sulla dashboard pubblicata.
+
+## Pulsanti e funzioni dell'header
+
+- **Il progetto** — apre il comunicato di presentazione dell'iniziativa.
+- **Dichiarazioni** — apre i virgolettati di Marco Gabusi (Regione Piemonte),
+  Alessandro Lana (UPI Piemonte) e Davide Gilardino (ANCI Piemonte).
+- **⬇ Excel** — scarica l'intero elenco in formato Excel (`.xlsx`) dal Google Sheet.
+- **✚ Aderisci** — apre il modulo di adesione riservato alle imprese associate.
+- **↻** — ricarica i dati dal Google Sheet senza ricaricare la pagina.
+
+All'apertura la lista a sinistra è volutamente **vuota**: le imprese si individuano
+cliccando i punti sulla mappa, oppure usando i filtri Ricerca / Provincia / Bacino.
+Questo evita di dare evidenza ad alcune imprese rispetto ad altre.
+
+## Modulo di adesione imprese (Google Apps Script)
+
+Il pulsante **Aderisci** apre un form con i campi del foglio. L'invio scrive una nuova
+riga nel Google Sheet tramite uno script Google da configurare una sola volta:
+
+1. Apri il Google Sheet → menu **Estensioni → Apps Script**.
+2. Incolla il contenuto del file [`apps-script.gs`](apps-script.gs) e salva.
+3. **Distribuisci → Nuova distribuzione → App web**: *Esegui come* "Me", *Chi ha accesso*
+   "Chiunque". Autorizza e copia l'URL che termina con `/exec`.
+4. Incolla quell'URL in `app.js` nella costante `APPS_SCRIPT_URL` e fai un nuovo push.
+
+Lo script geocodifica automaticamente l'indirizzo inserito (lat/lng), così la nuova
+impresa compare subito sulla mappa. Finché `APPS_SCRIPT_URL` è vuoto, il form mostra un
+avviso e non invia.
 
 ## Logo
 

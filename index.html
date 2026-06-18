@@ -12,24 +12,26 @@
 <!-- HEADER -->
 <header class="header">
   <div class="header-brand">
-    <span class="header-logo">
-      <svg viewBox="0 0 250 50" xmlns="http://www.w3.org/2000/svg" aria-label="ANCE Piemonte Valle d'Aosta">
-        <text x="2" y="38" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="38" letter-spacing="1" fill="#16294e">ANCE</text>
-        <rect x="120" y="7" width="4" height="36" fill="#2f5b9c"/>
-        <text x="135" y="22" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="14" letter-spacing="0.5" fill="#16294e">PIEMONTE</text>
-        <text x="135" y="40" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="14" letter-spacing="0.5" fill="#16294e">VALLE D'AOSTA</text>
-      </svg>
-    </span>
+    <span class="header-logo"><img src="img/logo-ance.jpg" alt="ANCE Piemonte Valle d'Aosta"></span>
     <div>
       <div class="header-title">Emergenze Idrauliche</div>
       <div class="header-subtitle">Imprese qualificate · Piemonte e Valle d'Aosta</div>
     </div>
   </div>
-  <div class="header-stats">
-    <div class="stat"><div class="stat-num" id="stat-imprese">0</div><div class="stat-label">Imprese visibili</div></div>
-    <div class="stat"><div class="stat-num" id="stat-addetti">0</div><div class="stat-label">Addetti totali</div></div>
-    <div class="stat"><div class="stat-num" id="stat-province">0</div><div class="stat-label">Province</div></div>
-    <button id="btn-refresh" class="btn-refresh" title="Rilegge i dati dal Google Sheet">↻ Aggiorna dati</button>
+
+  <div class="header-right">
+    <div class="header-stats">
+      <div class="stat"><div class="stat-num" id="stat-imprese">0</div><div class="stat-label">Imprese</div></div>
+      <div class="stat"><div class="stat-num" id="stat-addetti">0</div><div class="stat-label">Addetti</div></div>
+      <div class="stat"><div class="stat-num" id="stat-province">0</div><div class="stat-label">Province</div></div>
+    </div>
+    <div class="header-actions">
+      <button class="hbtn" id="btn-progetto">Il progetto</button>
+      <button class="hbtn" id="btn-dichiarazioni">Dichiarazioni</button>
+      <button class="hbtn" id="btn-download">⬇ Excel</button>
+      <button class="hbtn hbtn-accent" id="btn-aderisci">✚ Aderisci</button>
+      <button class="hbtn" id="btn-refresh" title="Rilegge i dati dal Google Sheet">↻</button>
+    </div>
   </div>
 </header>
 
@@ -45,17 +47,18 @@
       <div class="filter-row">
         <div class="filter-block" style="flex:1">
           <div class="filter-label">Provincia</div>
-          <select id="f-provincia"><option value="">Tutte</option></select>
+          <select id="f-provincia"><option value="">Tutte le province</option></select>
         </div>
         <div class="filter-block" style="flex:1">
           <div class="filter-label">Bacino</div>
-          <select id="f-bacino"><option value="">Tutti</option></select>
+          <select id="f-bacino"><option value="">Tutti i bacini</option></select>
         </div>
       </div>
       <div class="filter-toggles">
         <span class="badge-toggle" id="t-h24" data-active="false">Reperibilità H24</span>
         <span class="badge-toggle" id="t-soa" data-active="false">SOA certificata</span>
       </div>
+      <button class="btn-clear" id="btn-clear" style="display:none">✕ Azzera filtri</button>
     </div>
     <div class="sidebar-list" id="lista"></div>
     <div class="sidebar-status" id="status-bar">Caricamento dati…</div>
@@ -80,7 +83,128 @@
 </div>
 
 <!-- Drawer handle (mobile) -->
-<button class="drawer-handle" id="drawer-handle">☰ Imprese</button>
+<button class="drawer-handle" id="drawer-handle">☰ Filtri e imprese</button>
+
+<!-- ============ MODALE: IL PROGETTO ============ -->
+<div class="modal" id="modal-progetto">
+  <div class="modal-box">
+    <button class="modal-close" data-close>✕</button>
+    <h2 class="modal-title">Emergenze idrauliche: ANCE Piemonte e Valle d'Aosta supporta il territorio con le Imprese Associate per interventi immediati</h2>
+    <div class="modal-date">14 Ottobre 2025</div>
+    <div class="modal-text">
+      <p>Su iniziativa del Presidente ANCE Piemonte e Valle d'Aosta <strong>Paola Malabaila</strong>, in collaborazione con <strong>Marco Gabusi</strong>, Assessore della Regione Piemonte, <strong>Alessandro Lana</strong>, Presidente UPI Piemonte, <strong>Davide Gilardino</strong>, Presidente ANCI Piemonte e con il coinvolgimento di <strong>AIPO – Agenzia Interregionale per il fiume Po</strong>, è stato predisposto un elenco delle imprese edili qualificate disponibili a intervenire in caso di emergenze idrauliche sul territorio regionale.</p>
+      <p>L'iniziativa nasce a seguito dell'interlocuzione avviata nell'estate con i referenti della Regione Piemonte e di AIPO, con l'obiettivo di garantire la massima tempestività operativa in occasione di piene improvvise, dissesti idraulici, ostruzioni degli alvei o altre calamità naturali che richiedano interventi urgenti di messa in sicurezza.</p>
+      <p>Attualmente l'elenco comprende <strong><span id="art-imprese">51</span> imprese</strong>, per un totale di <strong><span id="art-addetti">853</span> addetti</strong>, distribuiti su tutte le province piemontesi.</p>
+      <p>Le imprese che hanno aderito al progetto dispongono di:</p>
+      <ol>
+        <li>macchinari e attrezzature idonee a operare in sicurezza in contesti di urgenza e somma urgenza;</li>
+        <li>personale tecnicamente qualificato, con competenze in manutenzione idraulica, escavazioni in alveo;</li>
+        <li>esperienza pregressa in interventi di emergenza;</li>
+        <li>disponibilità e capacità tempestiva di attivazione.</li>
+      </ol>
+      <p>L'elenco è stato reso disponibile in formato digitale e georeferenziato per agevolare la consultazione da parte degli enti competenti.</p>
+      <p>Si ritiene che tale strumento possa rappresentare un utile supporto operativo per la Protezione Civile regionale, per le Province, per i Comuni e per AIPO, contribuendo a migliorare la tempestività e l'efficacia degli interventi di emergenza idraulica nonché la collaborazione con il sistema delle imprese piemontesi.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODALE: DICHIARAZIONI ============ -->
+<div class="modal" id="modal-dichiarazioni">
+  <div class="modal-box">
+    <button class="modal-close" data-close>✕</button>
+    <h2 class="modal-title">Le dichiarazioni</h2>
+    <div class="quotes">
+      <div class="quote">
+        <div class="quote-author">Marco Gabusi</div>
+        <div class="quote-role">Assessore alle Opere pubbliche, alla difesa del suolo e alla Protezione civile, Regione Piemonte</div>
+        <blockquote>"Il sistema dell'emergenza in Piemonte si dota, con questa iniziativa, di un ulteriore tassello che consentirà di agire tempestivamente e potendosi affidare ad aziende conosciute e legate al territorio. Per questo motivo la Regione si è messa a disposizione per facilitare il rapporto tra enti locali e operatori economici piemontesi."</blockquote>
+      </div>
+      <div class="quote">
+        <div class="quote-author">Alessandro Lana</div>
+        <div class="quote-role">Presidente UPI Piemonte</div>
+        <blockquote>"Questa iniziativa rappresenta un valore aggiunto per il sistema delle autonomie locali. Le Province, in quanto enti di area vasta, hanno un ruolo strategico nella prevenzione e nella gestione delle emergenze idrauliche, in raccordo con Comuni e Regione. Disporre di un elenco strutturato e georeferenziato di imprese qualificate ci consente di contare su risorse immediate e affidabili, riducendo i tempi di attivazione e aumentando l'efficacia degli interventi. È un esempio concreto di collaborazione tra istituzioni e mondo imprenditoriale, che rafforza la capacità del territorio di affrontare in maniera tempestiva e coordinata le criticità legate al dissesto idrogeologico."</blockquote>
+      </div>
+      <div class="quote">
+        <div class="quote-author">Davide Gilardino</div>
+        <div class="quote-role">Presidente ANCI Piemonte</div>
+        <blockquote>"È innegabile la fondamentale importanza della tempestività nelle emergenze. I comuni intervengono grazie allo straordinario sistema della Protezione Civile, ma il poter contare su imprese operative in caso di emergenze idrauliche rappresenta uno strumento in più che i nostri sindaci potranno avere per intervenire in modo efficace e dare risposte immediate alle loro comunità. Ringrazio ANCE Piemonte e Valle d'Aosta per la collaborazione."</blockquote>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODALE: ADERISCI (FORM) ============ -->
+<div class="modal" id="modal-aderisci">
+  <div class="modal-box">
+    <button class="modal-close" data-close>✕</button>
+    <h2 class="modal-title">Adesione impresa</h2>
+    <p class="modal-sub">Riservato alle imprese associate ad ANCE Piemonte e Valle d'Aosta. I dati inseriti alimentano l'elenco delle imprese disponibili per le emergenze idrauliche.</p>
+    <form id="form-adesione" class="form">
+      <div class="form-grid">
+        <label>Provincia *
+          <select name="provincia" required>
+            <option value="">—</option>
+            <option>TO</option><option>AL</option><option>AT</option><option>BI</option>
+            <option>CN</option><option>NO</option><option>VC</option><option>VB</option><option>AO</option>
+          </select>
+        </label>
+        <label>Ragione sociale *
+          <input type="text" name="ragione_sociale" required>
+        </label>
+        <label>Indirizzo sede legale
+          <input type="text" name="indirizzo">
+        </label>
+        <label>Città *
+          <input type="text" name="citta" required>
+        </label>
+        <label>Persona di riferimento
+          <input type="text" name="persona_riferimento">
+        </label>
+        <label>Telefono
+          <input type="text" name="telefono" placeholder="es. 0123 456789 · 333 1234567">
+        </label>
+        <label>E-mail
+          <input type="text" name="email" placeholder="es. info@impresa.it · gare@impresa.it">
+        </label>
+        <label>Qualificazione SOA
+          <select name="qualificazione_soa">
+            <option value="SI">SI</option>
+            <option value="NO SOA (ESPERIENZA PREGRESSA)">NO SOA (esperienza pregressa)</option>
+          </select>
+        </label>
+        <label>Numero medio addetti
+          <input type="number" name="addetti" min="0">
+        </label>
+        <label>Reperibilità H24
+          <select name="reperibilita_h24">
+            <option>SI</option><option>NO</option><option>DA CONCORDARE</option>
+          </select>
+        </label>
+      </div>
+      <label>Qualificazione del personale
+        <textarea name="qualificazione_personale" rows="2" placeholder="es. tecnici specializzati in manutenzione idraulica, operatori escavatori..."></textarea>
+      </label>
+      <label>Mezzi e attrezzature
+        <textarea name="mezzi" rows="2" placeholder="es. escavatori, pale gommate/cingolate, pompe idrovore, autocarri pesanti..."></textarea>
+      </label>
+      <label>Bacini idrografici di operatività
+        <input type="text" name="bacini" placeholder="es. PO SESIA DORA BORMIDA TANARO">
+      </label>
+      <label>Logo (URL immagine, facoltativo)
+        <input type="text" name="logo" placeholder="https://.../logo.png">
+      </label>
+      <label class="form-check">
+        <input type="checkbox" name="ance_member" required>
+        Dichiaro che l'impresa è associata ad ANCE Piemonte e Valle d'Aosta.
+      </label>
+      <div class="form-actions">
+        <button type="submit" class="btn-submit" id="form-submit">Invia adesione</button>
+        <span class="form-msg" id="form-msg"></span>
+      </div>
+      <p class="form-note" id="form-note"></p>
+    </form>
+  </div>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="app.js"></script>
