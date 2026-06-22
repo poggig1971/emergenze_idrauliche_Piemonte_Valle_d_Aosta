@@ -26,8 +26,8 @@
 // Foglio (tab) in cui salvare le richieste in attesa di validazione
 var SHEET_RICHIESTE = "Richieste di Inserimento";
 
-// Email a cui notificare ogni nuova richiesta
-var NOTIFY_EMAIL = "gianluca.poggi@ancepiemonte.it";
+// Email a cui notificare ogni nuova richiesta (più indirizzi separati da virgola)
+var NOTIFY_EMAIL = "info@ancepiemonte.it,operepubbliche@ancepiemonte.it";
 
 function doPost(e) {
   try {

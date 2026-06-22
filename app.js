@@ -195,7 +195,7 @@ function render(){
 function updateCounters(list){
   $("stat-imprese").textContent  = list.length;
   $("stat-addetti").textContent  = list.reduce((s, i) => s + (Number(i.addetti) || 0), 0);
-  $("stat-province").textContent = new Set(list.map(i => i.provincia)).size;
+  $("stat-aree").textContent = new Set(list.map(i => i.provincia)).size;
 }
 
 function updateArticleStats(){
