@@ -482,14 +482,19 @@ async function submitAdesione(e){
   const btn = $("form-submit");
   btn.disabled = true; msg.textContent = "Invio in corso…"; msg.className = "form-msg";
   try {
-    const fd = new FormData(form);
-    // raccoglie le crocette in un unico campo (come nel foglio)
+    // costruisce i parametri come URL-encoded (formato che Apps Script legge in modo affidabile)
+    const params = new URLSearchParams();
+    new FormData(form).forEach((v, k) => params.set(k, v));
     const mezziSel = [...form.querySelectorAll(".chk-mezzi:checked")].map(c => c.value);
     const altro = (($("mezzi-altro") || {}).value || "").trim();
     if (altro) mezziSel.push(altro.toUpperCase());
-    fd.set("mezzi", mezziSel.join(" "));
-    fd.set("bacini", [...form.querySelectorAll(".chk-bacini:checked")].map(c => c.value).join(" "));
-    await fetch(APPS_SCRIPT_URL, { method: "POST", body: fd, mode: "no-cors" });
+    params.set("mezzi", mezziSel.join(" "));
+    params.set("bacini", [...form.querySelectorAll(".chk-bacini:checked")].map(c => c.value).join(" "));
+    await fetch(APPS_SCRIPT_URL, {
+      method: "POST", mode: "no-cors",
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body: params.toString()
+    });
     msg.textContent = "Richiesta inviata. Sarà valutata da ANCE Piemonte e Valle d'Aosta. Grazie!";
     msg.className = "form-msg ok";
     form.reset();
