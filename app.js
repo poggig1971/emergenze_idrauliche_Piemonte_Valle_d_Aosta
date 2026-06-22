@@ -238,12 +238,22 @@ function renderList(list){
   });
 }
 
+// Dimensione del pallino per fasce di addetti (Opzione A)
+function markerSize(a){
+  a = Number(a) || 0;
+  if (a <= 5)  return 14;   // 1–5
+  if (a <= 10) return 19;   // 6–10
+  if (a <= 20) return 25;   // 11–20
+  if (a <= 35) return 32;   // 21–35
+  return 40;                // 36+
+}
+
 function renderMarkers(list){
   markerLayer.clearLayers();
   markers = {};
   list.forEach(i => {
     const col = PROV_COLORS[i.provincia] || "#777";
-    const size = Math.max(15, Math.min(40, 13 + i.addetti * 0.55));
+    const size = markerSize(i.addetti);
     const icon = L.divIcon({
       className: "",
       html: `<div class="marker-circle" style="width:${size}px;height:${size}px;background:${col}"></div>`,
@@ -388,6 +398,17 @@ function initMap(){
     { "Confini provinciali": provinceLayer },
     { collapsed: false, position: "topleft" }
   ).addTo(map);
+
+  // Legenda: dimensione pallino = fasce di addetti
+  const legend = L.control({ position: "bottomleft" });
+  legend.onAdd = function(){
+    const div = L.DomUtil.create("div", "map-legend");
+    const bands = [["1–5", 8], ["6–10", 11], ["11–20", 14], ["21–35", 17], ["36+", 20]];
+    div.innerHTML = '<div class="legend-title">Addetti</div>' +
+      bands.map(b => `<div class="legend-row"><span class="legend-dot" style="width:${b[1]}px;height:${b[1]}px"></span>${b[0]}</div>`).join("");
+    return div;
+  };
+  legend.addTo(map);
 
   loadProvinceBoundaries();
 }

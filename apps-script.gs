@@ -118,3 +118,17 @@ function doPost(e) {
 function doGet() {
   return ContentService.createTextOutput("ANCE Emergenze Idrauliche - endpoint adesioni attivo.");
 }
+
+/**
+ * PROVA EMAIL — esegui questa funzione UNA VOLTA dall'editor:
+ * 1. seleziona "testNotifica" nel menu a tendina delle funzioni in alto
+ * 2. premi ▶ Esegui
+ * 3. autorizza quando richiesto (concedi anche "Invia email per tuo conto")
+ * 4. controlla la casella degli indirizzi in NOTIFY_EMAIL (anche nello SPAM)
+ * Se l'email arriva, il permesso è concesso: poi rifai la distribuzione (Nuova versione).
+ */
+function testNotifica() {
+  MailApp.sendEmail(NOTIFY_EMAIL,
+    "Test notifica ANCE Emergenze Idrauliche",
+    "Se ricevi questa email, l'invio dalle adesioni funziona correttamente.");
+}
