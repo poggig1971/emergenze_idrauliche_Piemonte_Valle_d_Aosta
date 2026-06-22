@@ -251,7 +251,7 @@ function renderMarkers(list){
     });
     const m = L.marker([i.lat, i.lng], { icon, zIndexOffset: 1000 }).addTo(markerLayer);
     m.bindPopup(popupHTML(i));
-    m.on("click", () => { highlightList(i.ordine); openDetail(i); });
+    m.on("click", () => selectProvince(i));
     markers[i.ordine] = m;
   });
 }
@@ -279,6 +279,21 @@ function selectImpresa(id, fromList){
   if (window.innerWidth <= 760 && fromList) $("sidebar").classList.remove("open");
 }
 window.__detail = id => { const i = IMPRESE.find(x => x.ordine === id); if (i) openDetail(i); };
+
+// Click su un marker: filtra per la sua provincia (lista a sinistra = imprese della provincia)
+// e apre il dettaglio dell'impresa cliccata.
+function selectProvince(i){
+  filters.provincia = i.provincia;
+  $("f-provincia").value = i.provincia;
+  render();                                  // aggiorna lista, contatori e marker della provincia
+  const m = markers[i.ordine];
+  if (m){
+    map.setView([i.lat, i.lng], Math.max(map.getZoom(), 9), { animate: true });
+    m.openPopup();
+  }
+  highlightList(i.ordine);
+  openDetail(i);
+}
 
 function highlightList(id){
   document.querySelectorAll(".list-item").forEach(el => {
