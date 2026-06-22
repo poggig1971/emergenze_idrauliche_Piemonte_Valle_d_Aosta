@@ -386,7 +386,7 @@ function initMap(){
   L.control.layers(
     { "Mappa": voyager, "Idrografia (fiumi e bacini)": rivers, "OpenStreetMap": osm },
     { "Confini provinciali": provinceLayer },
-    { collapsed: false }
+    { collapsed: false, position: "topleft" }
   ).addTo(map);
 
   loadProvinceBoundaries();
