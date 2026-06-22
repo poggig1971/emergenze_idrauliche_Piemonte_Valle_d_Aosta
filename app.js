@@ -449,11 +449,25 @@ function closeModals(){ document.querySelectorAll(".modal.open").forEach(m => m.
 // Popola le checkbox di mezzi e bacini
 function populateFormOptions(){
   const mg = $("mezzi-group");
-  if (mg) mg.innerHTML = MEZZI_OPZIONI.map(m =>
-    `<label class="chk"><input type="checkbox" class="chk-mezzi" value="${m.toUpperCase()}"> ${m}</label>`).join("");
+  if (mg){
+    mg.innerHTML = `<label class="chk chk-all"><input type="checkbox" class="chk-mezzi-all"> <strong>Tutti</strong></label>` +
+      MEZZI_OPZIONI.map(m => `<label class="chk"><input type="checkbox" class="chk-mezzi" value="${m.toUpperCase()}"> ${m}</label>`).join("");
+    const all = mg.querySelector(".chk-mezzi-all");
+    all.addEventListener("change", e => mg.querySelectorAll(".chk-mezzi").forEach(c => c.checked = e.target.checked));
+    mg.querySelectorAll(".chk-mezzi").forEach(c => c.addEventListener("change", () => {
+      all.checked = [...mg.querySelectorAll(".chk-mezzi")].every(x => x.checked);
+    }));
+  }
   const bg = $("bacini-group");
-  if (bg) bg.innerHTML = CANON_BACINI.map(b =>
-    `<label class="chk"><input type="checkbox" class="chk-bacini" value="${b}"> ${titol(b)}</label>`).join("");
+  if (bg){
+    bg.innerHTML = `<label class="chk chk-all"><input type="checkbox" class="chk-bacini-all"> <strong>Tutti</strong></label>` +
+      CANON_BACINI.map(b => `<label class="chk"><input type="checkbox" class="chk-bacini" value="${b}"> ${titol(b)}</label>`).join("");
+    const all = bg.querySelector(".chk-bacini-all");
+    all.addEventListener("change", e => bg.querySelectorAll(".chk-bacini").forEach(c => c.checked = e.target.checked));
+    bg.querySelectorAll(".chk-bacini").forEach(c => c.addEventListener("change", () => {
+      all.checked = [...bg.querySelectorAll(".chk-bacini")].every(x => x.checked);
+    }));
+  }
 }
 
 async function submitAdesione(e){
