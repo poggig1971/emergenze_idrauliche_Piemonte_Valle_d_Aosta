@@ -367,20 +367,16 @@ function openDetail(i){
 //  MAPPA
 // ============================================================
 function initMap(){
-  const voyager = L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-    maxZoom: 19, subdomains: "abcd",
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · © <a href="https://carto.com/attributions">CARTO</a>'
-  });
   const rivers = L.tileLayer("https://{s}.tile.openstreetmap.fr/openriverboatmap/{z}/{x}/{y}.png", {
     maxZoom: 18, subdomains: "abc",
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · OpenRiverboatMap'
   });
-  const osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  const osm = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   });
 
-  map = L.map("map", { zoomControl: true, layers: [voyager] }).setView([45.2, 7.9], 8);
+  map = L.map("map", { zoomControl: true, layers: [osm] }).setView([45.2, 7.9], 8);
 
   provinceLayer = L.geoJSON(null, {
     style: f => {
@@ -396,7 +392,7 @@ function initMap(){
   markerLayer = L.layerGroup().addTo(map);
 
   L.control.layers(
-    { "Mappa": voyager, "Idrografia (fiumi e bacini)": rivers, "OpenStreetMap": osm },
+    { "Mappa (OpenStreetMap)": osm, "Idrografia (fiumi e bacini)": rivers },
     { "Confini provinciali": provinceLayer },
     { collapsed: false, position: "topleft" }
   ).addTo(map);
