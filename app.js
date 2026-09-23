@@ -9,7 +9,7 @@
 // --- CONFIG ---
 const SHEET_ID  = "11Z14AM03ONDi1pNgMW0mSV9tcvD2DjFgp4FYVXZt7qw";
 const GID       = "0";
-const CSV_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}`;
+const CSV_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}&headers=1`;
 const XLSX_URL  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=xlsx`;
 const FALLBACK  = "data/imprese_fallback.json";
 
@@ -112,10 +112,12 @@ async function loadData(){
     const txt = await res.text();
     const data = parseCSV(txt);
     if (!data.length) throw new Error("CSV vuoto");
-    IMPRESE = normalizeImprese(data);
+    const lette = normalizeImprese(data);
+    if (!lette.length) throw new Error("Nessuna impresa valida nel foglio (controllare intestazioni/formato)");
+    IMPRESE = lette;
     $("status-bar").textContent = `${IMPRESE.length} imprese · dati dal Google Sheet · ${new Date().toLocaleTimeString("it-IT")}`;
   } catch (err){
-    console.warn("Fetch Google Sheet fallito, uso fallback:", err.message);
+    console.warn("Lettura Google Sheet non riuscita, uso fallback:", err.message);
     try {
       const res = await fetch(FALLBACK + "?t=" + Date.now());
       IMPRESE = normalizeImprese(await res.json());
